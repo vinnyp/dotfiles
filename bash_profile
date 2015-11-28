@@ -435,4 +435,4 @@ EOT
 
 #   Get updates installed Ruby gems, Homebrew, npm, and their installed packages
 #   -------------------------------------------------------------------
-    alias update='brew doctor; brew update; brew upgrade --all; brew cleanup; npm update -g; gem update --system; gem update'
+    alias update='brew doctor; brew update; brew upgrade --all; brew cask cleanup; brew cleanup; npm update -g; gem update --system; gem update'
