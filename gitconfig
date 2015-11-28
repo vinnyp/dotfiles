@@ -1,0 +1,171 @@
+[github]
+	user = vinnyp
+
+[user]
+	name = Vinny Pasceri
+	email = vpasceri@outlook.com
+
+[merge]
+	tool = vimdiff
+
+[color]
+	ui = auto
+	interactive = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red bold # deletions
+	new = green bold # additions
+	whitespace = red reverse
+
+[color "status"]
+	added = green
+	changed = yellow
+	untracked = red
+
+[core]
+	whitespace=space-before-tab,fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	editor = nano
+
+  # Use custom `.gitignore` and `.gitattributes`
+  excludesfile = ~/.gitignore_global
+  attributesfile = ~/.gitattributes
+
+  # Make `git rebase` safer on OS X
+  # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+  trustctime = false
+
+[alias]
+	# Sources:
+	#  https://github.com/alikins/gitconfig
+	#  https://github.com/henrik/dotfiles
+	#  https://github.com/jlukic/Git-Aliases
+	#  https://github.com/mathiasbynens/dotfiles
+
+	# unstages a file. use like 'git unstage filename'
+  unstage = reset HEAD --
+
+  # resets all uncommitted changes and files
+  abort = reset --hard HEAD
+
+  # shows diff only for files staged to commit
+  new = diff --cached
+
+  # Shows list of files that have a merge conflict
+  conflicts = diff --name-only --diff-filter=U
+
+  # View abbreviated SHA, description, and history graph of the latest 20 commits
+  l = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+  # Richer version of the l alias
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+	# Replacement for git pull. This will recursively update all git repros in a directory, including submodules.
+	sync = !git pull && git submodule update --init --recursive --merge
+
+	# Show the diff between the latest commit and the current state
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+	# `git di $number` shows the diff between the state `$number` revisions ago and the current state
+	di = !"d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d"
+
+	# Switch to a branch, creating it if necessary
+	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
+	# Show verbose output about tags, branches or remotes
+	tags = tag -l
+	branches = branch -a
+	remotes = remote -v
+
+	# Amend the currently staged files to the latest commit
+	amend = commit --amend --reuse-message=HEAD
+
+	# Credit an author on the latest commit
+	credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f"
+
+	# Interactive rebase with the given number of latest commits
+	reb = "!r() { git rebase -i HEAD~$1; }; r"
+
+	# Remove the old tag with this name and tag the latest commit with it.
+	retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+
+	# Find branches containing commit
+	fb = "!f() { git branch -a --contains $1; }; f"
+
+	# Find tags containing commit
+	ft = "!f() { git describe --always --contains $1; }; f"
+
+	# Find commits by source code
+	fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f"
+
+	# Find commits by commit message
+	fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f"
+
+	# Remove branches that have already been merged with master
+	# a.k.a. ‘delete merged’
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
+	# List contributors with number of commits
+	contributors = shortlog --summary --numbered
+
+	# url of origin, about 99% of what I use git config --list for
+  cloneurl = config --get remote.origin.url
+
+	# undo last commit
+  undo = reset HEAD~1
+
+  # change last commit message
+  recommit = commit --amend
+
+	# Summary of # commits/person
+  who = shortlog -s -n --no-merges
+
+	# what got pushed to master in the last hour
+  # based on http://stackoverflow.com/questions/3357219/expose-the-date-a-commit-was-pushed-to-a-repository
+  justpushed = log origin/master@{\"1 hour ago\"}..origin/master --
+
+	# show a list of every branch and show their latests commit, sorted by last commit
+  brlog = "!sh -c 'for C in $(git for-each-ref --sort=committerdate refs/heads --format=\"%(refname:short)\") ; do git show  -s --pretty=format:\"%Cgreen%ci %Cblue%cr%Creset  $C\" \"$C\" -- ; git show --stat -s $C ; echo; done'"
+  brlogremote = "!sh -c 'for C in $(git for-each-ref --sort=committerdate refs/remotes/origin --format=\"%(refname:short)\") ; do git show  -s --pretty=format:\"%Cgreen%ci %Cblue%cr%Creset  $C\" \"$C\" -- ; git show --stat -s $C ; echo; done'"
+
+	# find what commit a file was added
+	# usage: `git whatadded --foo.c`
+	whatadded = log --follow --diff-filter=A --find-renames=40%
+
+  # Shortcuts
+	stat = status
+	co = checkout
+  ci = commit
+  st = status
+  br = branch
+  type = cat-file -t
+  dump = cat-file -p[color]
+	m = checkout master
+
+[credential]
+	helper = cache --timeout=86400
+
+[mergetool]
+	keepBackup = true
+
+[filter "media"]
+	required = true
+	clean = git media clean %f
+	smudge = git media smudge %f
+
+[push]
+	default = simple
+
+[pretty]
+	nice = "%C(yellow)%h%C(reset) %C(white)%s%C(cyan)%d%C(reset) -- %an; %ar"
+
+[filter "lfs"]
+	clean = git lfs clean %f
+	smudge = git lfs smudge %f
+	required = true
