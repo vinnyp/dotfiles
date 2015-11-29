@@ -366,14 +366,6 @@ EOT
 
     }
 
-#  Generates a tree view from the current directory
-#   -------------------------------------------------------------------
-    function tree(){
-        pwd
-        ls -R | grep ":$" |   \
-        sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
-    }
-
 #   cleanupDS:  Recursively delete .DS_Store files
 #   -------------------------------------------------------------------
     alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
