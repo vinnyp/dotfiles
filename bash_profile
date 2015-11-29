@@ -152,6 +152,15 @@
 #   -------------------------------------------------------------------
     if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
+
+#   jenv: Use Homebrew's directories rather than ~/.jenv
+#   -------------------------------------------------------------------
+    export JENV_ROOT=/usr/local/var/jenv
+
+#   jenv: Enable shims and autocompletion
+#   -------------------------------------------------------------------
+    if which jenv > /dev/null; then eval "$(jenv init -)"; fi
+
 #   Larger bash history (allow 32³ entries; default is 500)
 #   -------------------------------------------------------------------
     export HISTSIZE=32768
