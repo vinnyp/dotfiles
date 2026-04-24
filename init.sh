@@ -28,9 +28,8 @@ if [ -f "${BASH_ROOT}/lib/aliases.sh" ]; then
     source "${BASH_ROOT}/lib/aliases.sh"
 fi
 
-# 2. Load Prompt / VCS
-# --------------------
-# Prompt configuration (also sources git-prompt.sh internally)
+# Prompt configuration
+# Note: prompt.sh sources git-prompt.sh internally
 if [ -f "${BASH_ROOT}/lib/prompt.sh" ]; then
     source "${BASH_ROOT}/lib/prompt.sh"
 fi

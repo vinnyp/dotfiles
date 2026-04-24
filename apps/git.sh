@@ -16,15 +16,13 @@ if [ -n "$HOMEBREW_PREFIX" ] && \
 fi
 
 # 2. System git completions from Xcode Command Line Tools
-_GIT_COMPLETION_SYSTEM="/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
-if [ -f "$_GIT_COMPLETION_SYSTEM" ] && ! type __git_wrap__git_main &>/dev/null; then
-    source "$_GIT_COMPLETION_SYSTEM"
+GIT_COMPLETION_SYSTEM="/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+if [ -f "$GIT_COMPLETION_SYSTEM" ] && ! type __git_wrap__git_main &>/dev/null; then
+    source "$GIT_COMPLETION_SYSTEM"
 fi
-unset _GIT_COMPLETION_SYSTEM
 
 # 3. Final fallback: vendored copy in lib/ (git_completion.bash, underscore)
-_GIT_COMPLETION_LIB="${HOME}/bash/lib/git_completion.bash"
-if [ -f "$_GIT_COMPLETION_LIB" ] && ! type __git_wrap__git_main &>/dev/null; then
-    source "$_GIT_COMPLETION_LIB"
+GIT_COMPLETION_LIB="${HOME}/bash/lib/git_completion.bash"
+if [ -f "$GIT_COMPLETION_LIB" ] && ! type __git_wrap__git_main &>/dev/null; then
+    source "$GIT_COMPLETION_LIB"
 fi
-unset _GIT_COMPLETION_LIB
