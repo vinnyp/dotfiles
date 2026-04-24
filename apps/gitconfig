@@ -139,7 +139,6 @@
 	whatadded = log --follow --diff-filter=A --find-renames=40%
 
 	# Shortcuts
-	stat = status
 	co = checkout
 	ci = commit
 	st = status

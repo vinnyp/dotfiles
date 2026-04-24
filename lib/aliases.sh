@@ -52,9 +52,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
     alias ql='qlmanage -p "$*" >& /dev/null'    # ql:           Opens any file in MacOS Quicklook Preview
     alias dt='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
 
-    # Clipboard integration
-    alias pbcopy='pbcopy'
-    alias pbpaste='pbpaste'
+    # Clipboard integration (pbcopy/pbpaste are macOS builtins, no alias needed)
 
     # Finder Visibility
     alias finder_show_hidden='defaults write com.apple.finder ShowAllFiles TRUE'
