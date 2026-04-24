@@ -13,12 +13,6 @@ mcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# Recursively search for a file
-# Recursively search for a file
-function qfind {
-    find . -name "$@"
-}
-
 # Find file under the current directory
 ff() {
     find . -name "$@"

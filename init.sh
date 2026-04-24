@@ -59,3 +59,13 @@ fi
 if [ -f "${HOME}/.bashrc_local" ]; then
     source "${HOME}/.bashrc_local"
 fi
+
+# 6. ~/.local/bin PATH
+# --------------------
+# Ensure ~/.local/bin is on PATH (uv, uvx, and other user-installed tools live here).
+# Uses the env shim if present, otherwise add directly.
+if [ -f "${HOME}/.local/bin/env" ]; then
+    source "${HOME}/.local/bin/env"
+elif [ -d "${HOME}/.local/bin" ] && [[ ":$PATH:" != *":${HOME}/.local/bin:"* ]]; then
+    export PATH="${HOME}/.local/bin:${PATH}"
+fi
