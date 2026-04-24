@@ -1,20 +1,28 @@
 #!/bin/bash
 #
 # Git configurations and completion.
-
+#
 # Note: Git prompt support is handled in lib/prompt.sh
 
-# Load Git completion
-# 1. Try Homebrew location if brew is installed
-if command -v brew &> /dev/null; then
-    if [ -f "$(brew --prefix)/etc/bash_completion.d/git-completion.bash" ]; then
-        source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
-    fi
+# Load Git completion — try sources in priority order, stop once loaded.
+# Uses $HOMEBREW_PREFIX (set by 'brew shellenv' in lib/env.sh) instead of
+# spawning a 'brew --prefix' subprocess on every shell start.
+
+# 1. Homebrew-installed git completion
+if [ -n "$HOMEBREW_PREFIX" ] && \
+   [ -f "${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash" ] && \
+   ! type __git_wrap__git_main &>/dev/null; then
+    source "${HOMEBREW_PREFIX}/etc/bash_completion.d/git-completion.bash"
 fi
 
-# 2. Try local lib location
-# Assuming directory structure: `${HOME}/bash/apps/git.sh` -> `${HOME}/bash/lib/git-completion.bash`
-GIT_COMPLETION_LIB="${HOME}/bash/lib/git-completion.bash"
-if [ -f "$GIT_COMPLETION_LIB" ]; then
+# 2. System git completions from Xcode Command Line Tools
+GIT_COMPLETION_SYSTEM="/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+if [ -f "$GIT_COMPLETION_SYSTEM" ] && ! type __git_wrap__git_main &>/dev/null; then
+    source "$GIT_COMPLETION_SYSTEM"
+fi
+
+# 3. Final fallback: vendored copy in lib/ (git_completion.bash, underscore)
+GIT_COMPLETION_LIB="${HOME}/bash/lib/git_completion.bash"
+if [ -f "$GIT_COMPLETION_LIB" ] && ! type __git_wrap__git_main &>/dev/null; then
     source "$GIT_COMPLETION_LIB"
 fi
