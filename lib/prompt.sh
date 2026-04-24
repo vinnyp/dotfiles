@@ -2,8 +2,19 @@
 #
 # Bash prompt configuration.
 
-# shellcheck disable=SC1090
-source "${HOME}/bash/lib/git-prompt.sh"
+# Load git-prompt.sh for __git_ps1 support.
+# Prefer the system-provided version from Xcode CLT (up-to-date, not vendored).
+# Fall back to the vendored copy in lib/ if CLT is not present.
+# shellcheck disable=SC1090,SC1091
+_GIT_PROMPT_SYSTEM="/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh"
+if [ -f "$_GIT_PROMPT_SYSTEM" ]; then
+    source "$_GIT_PROMPT_SYSTEM"
+elif [ -f "${HOME}/bash/lib/git-prompt.sh" ]; then
+    source "${HOME}/bash/lib/git-prompt.sh"
+else
+    echo "bash/prompt.sh: git-prompt.sh not found — git branch info will be absent from prompt" >&2
+fi
+unset _GIT_PROMPT_SYSTEM
 
 # Utility function to check for parent directory
 has_parent_dir() {
