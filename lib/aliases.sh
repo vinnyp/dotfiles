@@ -23,7 +23,6 @@ alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias ls='ls -G'                            # Enable colorized ls
 
 # General utilities
-alias edit='subl'                           # edit:         Opens any file in sublime editor
 alias c='clear'                             # c:            Clear terminal display
 alias which='type -all'                     # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'         # path:         Echo all executable Paths
