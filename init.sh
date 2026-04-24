@@ -61,9 +61,14 @@ if [ -f "${HOME}/.bashrc_local" ]; then
     source "${HOME}/.bashrc_local"
 fi
 
-# 6. ~/.local/bin PATH
-# --------------------
-# Ensure ~/.local/bin is on PATH (uv, uvx, and other user-installed tools live here).
+# 6. ~/bin and ~/.local/bin PATH
+# --------------------------------
+# ~/bin — personal scripts and tools (e.g. ok.sh GitHub CLI).
+if [ -d "${HOME}/bin" ] && [[ ":$PATH:" != *":${HOME}/bin:"* ]]; then
+    export PATH="${HOME}/bin:${PATH}"
+fi
+
+# ~/.local/bin — uv, uvx, and other user-installed tools.
 # Uses the env shim if present, otherwise add directly.
 if [ -f "${HOME}/.local/bin/env" ]; then
     source "${HOME}/.local/bin/env"
