@@ -33,3 +33,11 @@ export HISTCONTROL=ignoredups
 
 # Make some commands not show up in history
 export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
+
+# Hermes Agent — extra Python packages (e.g. hindsight-client).
+# Hermes runs under a read-only Nix store; third-party packages are installed
+# into ~/.hermes/python_packages and must be on PYTHONPATH before the
+# interpreter starts (dotenv is too late for sys.path injection).
+if [ -d "${HOME}/.hermes/python_packages" ]; then
+    export PYTHONPATH="${HOME}/.hermes/python_packages${PYTHONPATH:+:${PYTHONPATH}}"
+fi
