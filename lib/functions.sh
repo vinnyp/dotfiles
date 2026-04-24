@@ -114,15 +114,15 @@ EOT
     # SSH Key Generation (Interactive)
     ssh_key_gen() {
         local name email
-        echo "What's the name of the Key (no spaced please) ? "
+        echo "What's the name of the Key (no spaces please) ? "
         read -r name
-        
+
         echo "What's the email associated with it? "
         read -r email
-        
-        ssh-keygen -t rsa -f ~/.ssh/"id_rsa_$name" -C "$email"
-        pbcopy < ~/.ssh/"id_rsa_$name.pub"
-        
-        echo "SSH Key copied in your clipboard"
+
+        ssh-keygen -t ed25519 -C "$email" -f ~/.ssh/"id_ed25519_$name"
+        pbcopy < ~/.ssh/"id_ed25519_$name.pub"
+
+        echo "SSH Key copied to your clipboard"
     }
 fi

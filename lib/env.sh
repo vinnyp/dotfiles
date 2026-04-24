@@ -13,7 +13,11 @@ elif [ -f "/usr/local/bin/brew" ]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-export PATH="/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+# On Apple Silicon, Homebrew shellenv (above) already sets the correct paths.
+# Only add /usr/local/bin on Intel Macs or Linux where Homebrew lives there.
+if [ "$(uname -m)" != "arm64" ]; then
+    export PATH="/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+fi
 
 # Set Default Editor
 export EDITOR=nano
