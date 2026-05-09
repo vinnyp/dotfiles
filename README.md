@@ -19,7 +19,32 @@ The live dotfiles live at `~/bash/`. The home directory entries are symlinks:
 ```
 
 On login, bash loads `~/.bash_profile` → `~/bash/.bashrc` → `~/bash/init.sh`, which
-sources everything in order: colors, env, functions, aliases, prompt, then all `apps/*.sh`.
+sources everything in order: env, colors, functions, aliases, prompt, then all `apps/*.sh`.
+
+### Detecting BSD vs GNU `ls` (and choosing config)
+
+After `PATH` is set (including Homebrew and optional coreutils `gnubin`), **`lib/colors.sh`** decides which world you are in by probing the **`ls` that actually runs first on `PATH`**:
+
+- It runs **`command ls --version`** and checks for **`gnu`** in the output. GNU coreutils `ls` prints a GNU version string; the BSD `/bin/ls` on macOS does not support `--version` in the same way and will not match.
+- **`BASH_LS_IS_GNU`** is set to **`1`** or **`0`** accordingly.
+- **GNU `ls`:** use **`LS_COLORS`** and **`ls --color=auto`** (never BSD’s **`-G`**, which on GNU means **`--no-group`**, not color).
+- **BSD `ls`:** use **`CLICOLOR`** and **`LSCOLORS`**, and **`ls -G`**.
+
+**`lib/env.sh`** prepends **`$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin`** to **`PATH`** when that directory exists, so interactive **`ls`** and this probe stay consistent. If coreutils is installed but you only add `gnubin` later (for example in **`~/.bashrc_local`**), the probe could disagree with the real **`ls`** until PATH matches — putting **`gnubin` in `env.sh`** avoids that.
+
+Other scripts (**`lib/aliases.sh`**, **`bash_ls_long`** in **`lib/colors.sh`**, **`cd()`** in **`lib/functions.sh`**) read **`BASH_LS_IS_GNU`** so listings use the right flags.
+
+### Other macOS vs GNU behavior (beyond `ls`)
+
+When **`gnubin`** is ahead of **`/usr/bin`**, many commands are the GNU implementation, not the BSD ones that ship with macOS. Flags and env vars often differ:
+
+| Area | Notes |
+|------|--------|
+| **`date`**, **`sed`**, **`readlink`**, **`stat`** | GNU supports long options and different flags than BSD; scripts copied from Linux tutorials may assume GNU. |
+| **`BLOCKSIZE`** vs **`BLOCK_SIZE`** | BSD-style **`BLOCKSIZE`** is common on macOS; some GNU tools document **`BLOCK_SIZE`** for similar ideas (`ls -s`, `df`, `du`, depending on version). Worth checking **`man`** for whichever binary wins on your **`PATH`**. |
+| **`cp`**, **`mv`**, **`mkdir`** | Aliases here use short flags (**`-iv`**, **`-pv`**) that work on both BSD and GNU in typical setups. |
+
+If you want **BSD `ls`** only but other GNU tools from coreutils, avoid putting **`gnubin`** ahead of system **`PATH`** for **`ls`** (or override **`PATH`** in **`~/.bashrc_local`**) and rely on **`gls`** for GNU **`ls`** when needed.
 
 ## Structure
 
@@ -30,7 +55,7 @@ bash/
   init.sh                # Main loader — orchestrates everything below
   lib/
     colors.sh            # Terminal color vars (GNU vs BSD ls detection)
-    env.sh               # PATH, EDITOR, HISTSIZE, Homebrew shellenv
+    env.sh               # PATH (shellenv + optional coreutils gnubin), EDITOR, HISTSIZE
     functions.sh         # Utility functions (cd, extract, cdf, ii, etc.)
     aliases.sh           # Shell aliases
     prompt.sh            # PS1 with git branch + color

@@ -5,7 +5,7 @@
 # Change directory and list contents
 cd() {
     builtin cd "$@" || return
-    ls -FGlAhp
+    bash_ls_long
 }
 
 # Make directory and enter it

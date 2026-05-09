@@ -13,6 +13,16 @@ elif [ -f "/usr/local/bin/brew" ]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
+# GNU coreutils (brew install coreutils): put gnubin ahead of /usr/bin so `ls`
+# is GNU during dotfile init — avoids BSD LSCOLORS with GNU ls (broken colors).
+if [ -n "${HOMEBREW_PREFIX:-}" ]; then
+    _bash_coreutils_gnubin="${HOMEBREW_PREFIX}/opt/coreutils/libexec/gnubin"
+    if [ -d "${_bash_coreutils_gnubin}" ]; then
+        export PATH="${_bash_coreutils_gnubin}:${PATH}"
+    fi
+    unset _bash_coreutils_gnubin
+fi
+
 # On Apple Silicon, Homebrew shellenv (above) already sets the correct paths.
 # Only add /usr/local/bin on Intel Macs or Linux where Homebrew lives there.
 if [ "$(uname -m)" != "arm64" ]; then

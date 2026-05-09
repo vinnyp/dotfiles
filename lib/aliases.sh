@@ -18,9 +18,14 @@ alias .5='cd ../../../../../'               # Go back 5 directory levels
 alias .6='cd ../../../../../../'            # Go back 6 directory levels
 alias ~="cd ~"                              # ~:            Go Home
 
-# List directory contents
-alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
-alias ls='ls -G'                            # Enable colorized ls
+# List directory contents (GNU ls: --color; BSD/macOS ls: -G — never mix)
+if [[ ${BASH_LS_IS_GNU:-0} == 1 ]]; then
+    alias ls='command ls --color=auto'
+    alias ll='command ls --color=auto -FlAhp'
+else
+    alias ls='command ls -G'
+    alias ll='command ls -FGlAhp'
+fi
 
 # General utilities
 alias c='clear'                             # c:            Clear terminal display

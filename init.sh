@@ -8,14 +8,14 @@ BASH_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # 1. Load Core Libraries
 # ----------------------
-# Colors first, as other scripts may use them.
-if [ -f "${BASH_ROOT}/lib/colors.sh" ]; then
-    source "${BASH_ROOT}/lib/colors.sh"
-fi
-
-# Environment variables (PATH, EDITOR, etc.)
+# Environment first so PATH includes Homebrew coreutils gnubin before we probe
+# `ls` and set LS_COLORS vs LSCOLORS (colors.sh).
 if [ -f "${BASH_ROOT}/lib/env.sh" ]; then
     source "${BASH_ROOT}/lib/env.sh"
+fi
+
+if [ -f "${BASH_ROOT}/lib/colors.sh" ]; then
+    source "${BASH_ROOT}/lib/colors.sh"
 fi
 
 # Library functions
