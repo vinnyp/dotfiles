@@ -1,0 +1,511 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+
+  // ─── App ────────────────────────────────────────────────────────────────────
+  "app": {
+    // Preserved from draft — confirmed in schema + all-keys.md
+    "reorderOnNotification": true,
+    "warnBeforeClosingTab": true,
+    "openMarkdownInCmuxViewer": true,
+
+    // Power-user additions — all confirmed in schema
+    "appearance": "dark",
+
+    // New workspaces land right after the current one.
+    "newWorkspacePlacement": "afterCurrent",
+
+    // Command palette searches all surfaces — confirmed in schema
+    "commandPaletteSearchesAllSurfaces": true,
+
+    // Keep the workspace alive when you close the last terminal.
+    "keepWorkspaceOpenWhenClosingLastSurface": true,
+
+    // ADDED-FROM-RESEARCH §8: fork conversation into new tab, not a split.
+    // Confirmed in schema: enum ["right","left","top","bottom","newTab","newWorkspace"]
+    "forkConversationDefaultDestination": "newTab",
+
+    // ADDED-FROM-RESEARCH §10: new workspaces inherit cwd of focused terminal.
+    // Confirmed in schema. Default is already true, but explicit is clear.
+    "workspaceInheritWorkingDirectory": true,
+
+    // ADDED-FROM-RESEARCH §7: use canonical confirmQuit instead of legacy warnBeforeQuit.
+    // Confirmed in schema: enum ["always","dirty-only","never"]
+    "confirmQuit": "dirty-only",
+
+    // ADDED-FROM-RESEARCH §1: routes file-path clicks to desktop VS Code.
+    // Confirmed in schema. Only useful if you open the "Agent + Browser" layout.
+    "preferredEditor": "code"
+  },
+
+  // ─── Terminal ───────────────────────────────────────────────────────────────
+  "terminal": {
+    // Preserved from draft — confirmed in schema
+    "autoResumeAgentSessions": true,
+    "copyOnSelect": true,
+    "showScrollBar": true,
+
+    // ADDED-FROM-RESEARCH §3: hibernate idle agent terminals when over the limit.
+    // Confirmed in schema. idleSeconds minimum=5, maxLiveTerminals minimum=1.
+    "agentHibernation": {
+      "enabled": true,
+      "idleSeconds": 1800,
+      "maxLiveTerminals": 8
+    }
+  },
+
+  // ─── Notifications ──────────────────────────────────────────────────────────
+  "notifications": {
+    // Preserved from draft — confirmed in schema
+    "sound": "default",
+    "dockBadge": true,
+    "showInMenuBar": true,
+    "unreadPaneRing": true
+  },
+
+  // ─── Sidebar ────────────────────────────────────────────────────────────────
+  "sidebar": {
+    // Preserved from draft — confirmed in schema
+    "watchGitStatus": true,
+    "showPullRequests": true,
+    "showPorts": true,
+    "showLog": true,
+    "showProgress": true,
+    "branchLayout": "vertical"
+  },
+
+  // ─── Sidebar Appearance ─────────────────────────────────────────────────────
+  "sidebarAppearance": {
+    // Confirmed in schema + all-keys.md
+    "tintColor": "#1a1a2e",
+    "tintOpacity": 0.08
+  },
+
+  // ─── Workspace Colors ───────────────────────────────────────────────────────
+  "workspaceColors": {
+    // Confirmed in schema + all-keys.md
+    "indicatorStyle": "wash",
+    "colors": {
+      "Claude":  "#1A5276",
+      "Codex":   "#196F3D",
+      "Gemini":  "#283593",
+      "Agent":   "#4A235A",
+      "Monitor": "#7D4E00",
+      "CI":      "#784212",
+      "Shell":   "#3E4B5E",
+      "Review":  "#4A5568",
+      "Alert":   "#7B241C"
+    }
+  },
+
+  // ─── Automation ─────────────────────────────────────────────────────────────
+  "automation": {
+    // Preserved from draft — confirmed in schema
+    "suppressSubagentNotifications": true,
+    "claudeCodeIntegration": true,
+    "geminiIntegration": true,
+    "cursorIntegration": true
+    // socketControlMode is intentionally ABSENT — default is "cmuxOnly" (safe).
+    // For Codex, OpenCode, Amp, and other agents not covered by the above
+    // integration flags, run: cmux hooks setup
+    // (auto-detects agent binaries on PATH and installs session restore + Feed bridge)
+  },
+
+  // ─── Browser ────────────────────────────────────────────────────────────────
+  "browser": {
+    // Confirmed in schema + all-keys.md
+    "openTerminalLinksInCmuxBrowser": true,
+    "interceptTerminalOpenCommandInCmuxBrowser": true,
+    // Route localhost and common internal patterns to the embedded browser.
+    "hostsToOpenInEmbeddedBrowser": [
+      "localhost",
+      "127.0.0.1",
+      "*.localhost",
+      "*.localtest.me"
+    ],
+    "theme": "dark"
+  },
+
+  // ─── Shortcuts ──────────────────────────────────────────────────────────────
+  // All action IDs verified against shortcut-actions.md (auto-generated from schema).
+  // toggleSidebar lives on cmd+opt+b; cmd+b is a chord prefix for the three
+  // sidebar-tab switches (Feed/Sessions/Dock) — see the Right sidebar block.
+  "shortcuts": {
+    "bindings": {
+
+      // --- Workspace navigation ---
+      // Confirmed: shortcut-actions.md §Workspace
+      "selectWorkspaceByNumber": "cmd+1",
+      "commandPalette": "cmd+shift+p",
+      "goToWorkspace": "cmd+opt+g",
+      "newTab": "cmd+n",
+      "closeWorkspace": "cmd+shift+w",
+
+      // --- Surface navigation within a pane ---
+      // Confirmed: shortcut-actions.md §Panes and surfaces + §Tabs
+      "selectSurfaceByNumber": "cmd+opt+1",
+      "nextSurface": "cmd+shift+]",
+      "prevSurface": "cmd+shift+[",
+      "newSurface": "cmd+t",
+      "closeTab": "cmd+w",
+
+      // --- Pane splits ---
+      // Confirmed: shortcut-actions.md §Panes and surfaces
+      "splitRight": "cmd+opt+v",
+      "splitDown": "cmd+opt+s",
+      "toggleSplitZoom": "cmd+opt+z",
+      "equalizeSplits": "cmd+opt+=",
+
+      // --- Vim-style pane focus (cmd+opt+hjkl) ---
+      // Confirmed: shortcut-actions.md §Panes and surfaces
+      "focusLeft":  "cmd+opt+h",
+      "focusDown":  "cmd+opt+j",
+      "focusUp":    "cmd+opt+k",
+      "focusRight": "cmd+opt+l",
+
+      // --- Agent triage (notification handling) ---
+      // Confirmed: shortcut-actions.md §Notifications
+      // These exact bindings also appear in the cmux-keyboard-shortcuts SKILL.md
+      // Agent Triage preset template — further corroboration.
+      "jumpToUnread": "cmd+j",
+      "markOldestUnreadAndJumpNext": "cmd+shift+j",
+      "toggleUnread": "cmd+opt+u",
+      "showNotifications": "cmd+u",
+      "triggerFlash": "cmd+shift+h",
+
+      // --- Right sidebar ---
+      // Confirmed: shortcut-actions.md §Right sidebar
+      // toggleSidebar moved off cmd+b -> cmd+opt+b so cmd+b is free as a chord
+      // prefix for the three sidebar-tab switches below (previously dropped).
+      "toggleSidebar": "cmd+opt+b",
+      "focusRightSidebar": "cmd+shift+e",
+      // Sidebar-tab chords on the freed cmd+b prefix; mnemonic second strokes
+      // (f=Feed, s=Sessions, d=Dock). Action IDs confirmed in shortcut-actions.md.
+      "switchRightSidebarToFeed": ["cmd+b", "f"],
+      "switchRightSidebarToSessions": ["cmd+b", "s"],
+      "switchRightSidebarToDock": ["cmd+b", "d"],
+
+      // --- Config / reload ---
+      // Confirmed: shortcut-actions.md §App
+      "reloadConfiguration": "cmd+shift+,",
+      "openSettings": "cmd+,"
+    }
+  },
+
+  // ─── Actions ────────────────────────────────────────────────────────────────
+  // Shapes confirmed from cmux-customization/SKILL.md and references/examples.md
+  "actions": {
+
+    // Launch Claude Code in a new tab.
+    // Confirmed: examples.md §Quick Agent Buttons
+    "claude-new-tab": {
+      "type": "agent",
+      "agent": "claude",
+      "title": "Claude Code",
+      "subtitle": "Start Claude Code in this workspace",
+      "target": "newTabInCurrentPane",
+      "palette": true
+    },
+
+    // Launch Codex in a new tab.
+    // Confirmed: examples.md §Quick Agent Buttons
+    "codex-new-tab": {
+      "type": "agent",
+      "agent": "codex",
+      "title": "Codex",
+      "subtitle": "Start Codex in this workspace",
+      "target": "newTabInCurrentPane",
+      "palette": true
+    },
+
+    // Open the "Agent Driving" workspace layout.
+    // Confirmed: cmux-customization/SKILL.md §Common Patterns
+    "agent-driving-layout": {
+      "type": "workspaceCommand",
+      "title": "Agent Driving",
+      "commandName": "Agent Driving",
+      "icon": { "type": "symbol", "name": "person.wave.2" }
+    },
+
+    // Open the "Agent + Monitor" workspace layout.
+    "agent-monitor-layout": {
+      "type": "workspaceCommand",
+      "title": "Agent + Monitor",
+      "commandName": "Agent + Monitor",
+      "icon": { "type": "symbol", "name": "rectangle.split.2x1" }
+    }
+  },
+
+  // ─── UI wiring ──────────────────────────────────────────────────────────────
+  // Confirmed: cmux-customization/SKILL.md and references/examples.md §Worktree Agents
+  "ui": {
+
+    // Plus-button click opens the "Agent Driving" layout by default.
+    "newWorkspace": {
+      "action": "agent-driving-layout",
+      "contextMenu": [
+        { "action": "agent-driving-layout", "title": "Agent Driving" },
+        { "action": "agent-monitor-layout", "title": "Agent + Monitor" },
+        { "type": "separator" },
+        { "action": "cmux.newTerminal", "title": "New Terminal" },
+        { "action": "cmux.newBrowser",  "title": "New Browser" }
+      ]
+    },
+
+    // Tab bar buttons — confirmed: examples.md §Quick Agent Buttons
+    "surfaceTabBar": {
+      "buttons": [
+        "cmux.newTerminal",
+        "cmux.newBrowser",
+        { "action": "claude-new-tab", "title": "Claude" },
+        { "action": "codex-new-tab",  "title": "Codex" }
+      ]
+    }
+  },
+
+  // ─── Commands (workspace layout presets) ────────────────────────────────────
+  // Layout shape confirmed: cmux-customization/SKILL.md and references/examples.md
+  "commands": [
+
+    // ── 1. Agent Driving ─────────────────────────────────────────────────────
+    // 2-pane: agent terminal 62% left | helper shell right.
+    // Primary layout for driving a single agent without interrupting it.
+    {
+      "name": "Agent Driving",
+      "description": "Agent terminal on the left, helper shell on the right.",
+      "keywords": ["agent", "claude", "codex", "drive", "driving"],
+      "workspace": {
+        "name": "Agent",
+        "cwd": ".",
+        "layout": {
+          "direction": "horizontal",
+          "split": 0.62,
+          "children": [
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Agent",
+                    "command": "claude"
+                  }
+                ]
+              }
+            },
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Shell"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    // ── 2. Agent + Monitor ───────────────────────────────────────────────────
+    // 3-pane: agent top-left | shell bottom-left | cmux Feed TUI right.
+    // Use for long/overnight sessions where the permission feed must be visible.
+    // cmux feed tui --opentui confirmed in RESEARCH.md §5 and examples.md §CI Watch.
+    {
+      "name": "Agent + Monitor",
+      "description": "Agent top-left, shell bottom-left, Feed TUI on the right.",
+      "keywords": ["agent", "monitor", "feed", "watch", "overnight"],
+      "workspace": {
+        "name": "Agent",
+        "cwd": ".",
+        "layout": {
+          "direction": "horizontal",
+          "split": 0.60,
+          "children": [
+            {
+              "direction": "vertical",
+              "split": 0.65,
+              "children": [
+                {
+                  "pane": {
+                    "surfaces": [
+                      {
+                        "type": "terminal",
+                        "name": "Agent",
+                        "command": "claude"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "pane": {
+                    "surfaces": [
+                      {
+                        "type": "terminal",
+                        "name": "Shell"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Feed",
+                    "command": "cmux feed tui --opentui"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    // ── 3. Multi-Agent ───────────────────────────────────────────────────────
+    // Side-by-side Claude Code and Codex, equal split.
+    // For running two agents on different branches / tasks simultaneously.
+    {
+      "name": "Multi-Agent",
+      "description": "Claude Code left, Codex right — equal split.",
+      "keywords": ["multi", "parallel", "claude", "codex", "agents"],
+      "workspace": {
+        "name": "Agents",
+        "cwd": ".",
+        "layout": {
+          "direction": "horizontal",
+          "children": [
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Claude",
+                    "command": "claude"
+                  }
+                ]
+              }
+            },
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Codex",
+                    "command": "codex"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    // ── 4. IDE ───────────────────────────────────────────────────────────────
+    // ADDED-FROM-RESEARCH §9 (jacobtellep/cmux-setup pattern, also in crex "ide" preset).
+    // 3-pane: agent 60% left | lazygit top-right | shell bottom-right.
+    // Classic conductor-style layout — watch diffs live while agent codes.
+    {
+      "name": "IDE",
+      "description": "Agent left, lazygit top-right, shell bottom-right.",
+      "keywords": ["ide", "lazygit", "git", "agent", "claude", "dev"],
+      "workspace": {
+        "name": "IDE",
+        "cwd": ".",
+        "layout": {
+          "direction": "horizontal",
+          "split": 0.60,
+          "children": [
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Agent",
+                    "command": "claude"
+                  }
+                ]
+              }
+            },
+            {
+              "direction": "vertical",
+              "split": 0.55,
+              "children": [
+                {
+                  "pane": {
+                    "surfaces": [
+                      {
+                        "type": "terminal",
+                        "name": "Git",
+                        "command": "lazygit"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "pane": {
+                    "surfaces": [
+                      {
+                        "type": "terminal",
+                        "name": "Shell"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+
+    // ── 5. Agent + Browser ───────────────────────────────────────────────────
+    // Agent terminal left | embedded browser right at about:blank.
+    // Use when you want localhost previews, PR reviews, or docs open alongside
+    // the agent. Navigate the browser surface manually after the workspace opens.
+    // (The complex code serve-web one-liner from RESEARCH §1 is intentionally
+    //  excluded — it is fragile; use this simpler shape instead.)
+    {
+      "name": "Agent + Browser",
+      "description": "Agent terminal left, embedded browser right.",
+      "keywords": ["agent", "browser", "preview", "localhost", "claude"],
+      "workspace": {
+        "name": "Agent",
+        "cwd": ".",
+        "layout": {
+          "direction": "horizontal",
+          "split": 0.55,
+          "children": [
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "terminal",
+                    "name": "Agent",
+                    "command": "claude"
+                  }
+                ]
+              }
+            },
+            {
+              "pane": {
+                "surfaces": [
+                  {
+                    "type": "browser",
+                    "name": "Browser",
+                    "url": "about:blank"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+
+  ]
+}
