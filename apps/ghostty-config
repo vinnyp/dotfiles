@@ -1,0 +1,41 @@
+# Ghostty terminal configuration for cmux.
+# Lives in the dotfiles repo (~/bash/apps/ghostty-config); symlinked to
+# ~/.config/ghostty/config. Apply changes with `cmux reload-config` (no restart).
+# Terminal rendering lives here; app behavior (shortcuts/sidebar/automation) is cmux.json.
+
+# ─── Theme ────────────────────────────────────────────────────────────────────
+# NOTE: cmux owns the terminal theme (`cmux themes set <name>`), and that OVERRIDES
+# any `theme =` line here — so theme is intentionally NOT set in this file (a line
+# here would be inert/misleading). Your current theme is whatever cmux has set
+# (e.g. "Mathias"). To change it:  cmux themes list  ;  cmux themes set catppuccin-mocha
+
+# ─── Font ─────────────────────────────────────────────────────────────────────
+# JetBrains Mono (installed on this machine; the draft's Monaspace Neon was not).
+# Swap to "Monaspace Neon" or "Zed Mono" if you install one later.
+font-family = JetBrains Mono
+font-size = 13.5
+adjust-cell-height = 8%
+
+# ─── Cursor ───────────────────────────────────────────────────────────────────
+cursor-style = block
+cursor-style-blink = true
+
+# ─── Scrollback ───────────────────────────────────────────────────────────────
+# 50k lines — review a full agent session without losing early context.
+scrollback-limit = 50000
+
+# ─── Padding ──────────────────────────────────────────────────────────────────
+window-padding-x = 8
+window-padding-y = 6
+
+# ─── Background ───────────────────────────────────────────────────────────────
+# Subtle transparency; set to 1.0 to disable.
+background-opacity = 0.95
+
+# ─── Shell integration ────────────────────────────────────────────────────────
+# cmux relies on this for cwd tracking, semantic prompts, autoResumeAgentSessions.
+shell-integration = detect
+
+# ─── Bell ─────────────────────────────────────────────────────────────────────
+# cmux notification sounds handle alerts; disable the audible bell.
+bell-feature = none
