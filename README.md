@@ -62,10 +62,15 @@ bash/
     git-prompt.sh        # Official git contrib prompt support
     git_completion.bash  # Official git bash completion
   apps/
+    agent-statuslines.sh # Auto-links the Claude/Gemini statusline scripts on shell load
     conda.sh             # Conda init (Anaconda3 at /opt/anaconda3)
     git.sh               # Loads git bash completion
     gitconfig            # Git config (symlinked to ~/.gitconfig)
     node.sh              # NVM init + npmls()
+    claude/
+      statusline-command.sh  # Claude Code statusline payload (symlinked to ~/.claude/)
+    gemini/
+      statusline-command.sh  # Gemini/Antigravity statusline payload (symlinked to ~/.gemini/)
   secrets.template.sh    # Template for secrets.sh (git-ignored)
 ```
 
@@ -80,6 +85,11 @@ ln -sf ~/bash/.bash_profile ~/.bash_profile
 ln -sf ~/bash/.bashrc ~/.bashrc
 ln -sf ~/bash/apps/gitconfig ~/.gitconfig
 
+# Agent statuslines (optional — apps/agent-statuslines.sh auto-links these on first
+# shell load, so you only need these lines if a real file already occupies the target):
+ln -sf ~/bash/apps/claude/statusline-command.sh ~/.claude/statusline-command.sh
+ln -sf ~/bash/apps/gemini/statusline-command.sh ~/.gemini/statusline-command.sh
+
 # Copy secrets template and fill in values
 cp ~/bash/secrets.template.sh ~/bash/secrets.sh
 # edit ~/bash/secrets.sh
@@ -87,6 +97,35 @@ cp ~/bash/secrets.template.sh ~/bash/secrets.sh
 # Reload
 source ~/.bash_profile
 ```
+
+## Agent statuslines (Claude Code + Gemini)
+
+Two vendored scripts render a matching two-line status for the coding agents:
+
+- **Line 1:** model · context % · rate limits (5h / weekly) · effort · git branch/worktree
+- **Line 2:** session name · cwd
+
+```
+✳ Opus 4.8 | ctx: 14% | 5h: 8% | weekly: 6% | ⚡ xhigh | 🌿 main ●
+💬 sess: foundry-0631 | 📁 ~/Documents/Obsidian/foundry
+```
+
+The payloads live in `apps/claude/statusline-command.sh` and
+`apps/gemini/statusline-command.sh` (kept in subdirs on purpose — they read stdin, so
+they must never be matched by the non-recursive `apps/*.sh` source-loop in `init.sh`, or
+every interactive shell would hang). `apps/agent-statuslines.sh` is the sourced setup
+module: on shell load it idempotently symlinks each payload into place (only when the
+target is missing — it never clobbers a real file), mirroring how `apps/cmux.sh` links
+the `~/.config` files:
+
+```
+~/.claude/statusline-command.sh  ->  ~/bash/apps/claude/statusline-command.sh
+~/.gemini/statusline-command.sh  ->  ~/bash/apps/gemini/statusline-command.sh
+```
+
+Claude Code is wired to its script via the `statusLine` command in
+`~/.claude/settings.json`; Gemini/Antigravity is wired via its own statusline config.
+Both resolve through the symlink, so the configured command path never changes.
 
 ## Secrets & Local Overrides
 
