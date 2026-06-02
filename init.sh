@@ -75,3 +75,21 @@ if [ -f "${HOME}/.local/bin/env" ]; then
 elif [ -d "${HOME}/.local/bin" ] && [[ ":$PATH:" != *":${HOME}/.local/bin:"* ]]; then
     export PATH="${HOME}/.local/bin:${PATH}"
 fi
+
+# 7. Final PATH dedupe (must be LAST PATH mutation)
+# ------------------------------------------------
+# Pin ~/.local/bin to the FRONT before the dedupe collapses everything. This
+# restores the user's tool precedence (claude, gemini, pp resolve from
+# ~/.local/bin ahead of /opt/homebrew/bin and the cmux.app bin dir). The env
+# shim in section 6 lands ~/.local/bin too late (behind those); prepending here,
+# right before the keep-first dedupe, makes it first + single + fully deduped.
+export PATH="${HOME}/.local/bin:${PATH}"
+
+# Collapse any duplicate PATH entries, order-preserving (keep first occurrence).
+# This is the last PATH-touching step in both login and non-login interactive
+# shells: the repo bashrc sources this file and adds nothing to PATH afterward,
+# and the repo bash_profile only sources bashrc (no PATH change). Defined in
+# lib/env.sh.
+if type __dedupe_path >/dev/null 2>&1; then
+    __dedupe_path
+fi

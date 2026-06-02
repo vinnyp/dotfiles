@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# .bashrc
-# Sourced by non-login interactive shells (and by .bash_profile for login shells).
+# bashrc
+# Sourced (via the ~/.bashrc shim) by non-login interactive shells, and by the
+# repo bash_profile for login shells.
 
 # Return early for non-interactive shells (scp, rsync, remote commands, etc.)
 [[ $- == *i* ]] || return

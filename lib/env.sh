@@ -2,6 +2,27 @@
 #
 # Global environment variables.
 
+# Order-preserving PATH dedupe. Splits $PATH on ':', keeps the FIRST occurrence
+# of each non-empty directory, drops later duplicates, and rebuilds $PATH.
+# Defensive backstop in case an installer re-adds an entry that init.sh's guards
+# missed; invoked as the last step of init.sh (after all PATH mutations).
+__dedupe_path() {
+    local _old_ifs="$IFS"
+    local _new_path="" _dir
+    IFS=':'
+    for _dir in $PATH; do
+        # Skip empty segments (e.g. a leading/trailing/doubled ':').
+        [ -n "$_dir" ] || continue
+        # Append only if we haven't already kept this exact dir.
+        case ":${_new_path}:" in
+            *":${_dir}:"*) ;;
+            *) _new_path="${_new_path:+${_new_path}:}${_dir}" ;;
+        esac
+    done
+    IFS="$_old_ifs"
+    export PATH="$_new_path"
+}
+
 # Core paths
 # Note: Application specific paths (node, conda) are handled in their respective app modules.
 

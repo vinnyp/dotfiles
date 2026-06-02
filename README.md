@@ -10,16 +10,31 @@ Vinny's personal shell environment — modular bash configuration for macOS.
 
 ## How It Works
 
-The live dotfiles live at `~/bash/`. The home directory entries are symlinks:
+The live dotfiles live at `~/bash/`. The home rc files are **thin shims** — small
+real files in `$HOME` that source the curated config out of the repo:
 
 ```
-~/.bash_profile  ->  ~/bash/.bash_profile
-~/.bashrc        ->  ~/bash/.bashrc
-~/.gitconfig     ->  ~/bash/apps/gitconfig
+~/.bashrc        (real file) → source ~/bash/bashrc
+~/.bash_profile  (real file) → source ~/bash/bash_profile
+~/.gitconfig     (real file) → [include] path = ~/bash/apps/gitconfig
 ```
 
-On login, bash loads `~/.bash_profile` → `~/bash/.bashrc` → `~/bash/init.sh`, which
-sources everything in order: env, colors, functions, aliases, prompt, then all `apps/*.sh`.
+**Why shims, not symlinks?** Package installers (`uv`, `nvm`, `gh`, etc.) like to
+*append* lines to `~/.bashrc` / `~/.bash_profile` — and `gh auth login` appends a
+credential helper to `~/.gitconfig`. When those files were symlinks into the repo,
+every appended line landed inside the **public** repo. With real shim files,
+installer-appended lines accumulate **in `$HOME`** (below the `source` line for the rc
+files, below the `[include]` for `~/.gitconfig`) and never reach the public repo. The
+repo copies (`bashrc`, `bash_profile`, dropped leading dot because they're sourced by
+path now, not symlinked; and `apps/gitconfig`, included not symlinked) stay clean and
+shareable. `~/.gitconfig` pulls in the curated config via `[include] path =
+~/bash/apps/gitconfig`; because the `[include]` is listed first, repo defaults load
+first and any machine-local lines below it win.
+
+On login, bash loads `~/.bash_profile` → `~/bash/bash_profile` → `~/bash/bashrc` →
+`~/bash/init.sh`, which sources everything in order: env, colors, functions, aliases,
+prompt, then all `apps/*.sh`. A non-login interactive shell loads `~/.bashrc` →
+`~/bash/bashrc` → `~/bash/init.sh`.
 
 ### Detecting BSD vs GNU `ls` (and choosing config)
 
@@ -50,8 +65,8 @@ If you want **BSD `ls`** only but other GNU tools from coreutils, avoid putting 
 
 ```
 bash/
-  .bash_profile          # Login shell entry — sources .bashrc
-  .bashrc                # Non-login entry — sources init.sh
+  bash_profile           # Login shell config — sourced by the ~/.bash_profile shim; sources bashrc
+  bashrc                 # Interactive shell config — sourced by the ~/.bashrc shim; sources init.sh
   init.sh                # Main loader — orchestrates everything below
   lib/
     colors.sh            # Terminal color vars (GNU vs BSD ls detection)
@@ -65,7 +80,7 @@ bash/
     agent-statuslines.sh # Auto-links the Claude/Gemini statusline scripts on shell load
     conda.sh             # Conda init (Anaconda3 at /opt/anaconda3)
     git.sh               # Loads git bash completion
-    gitconfig            # Git config (symlinked to ~/.gitconfig)
+    gitconfig            # Git config (included by the ~/.gitconfig shim via [include])
     node.sh              # NVM init + npmls()
     claude/
       statusline-command.sh  # Claude Code statusline payload (symlinked to ~/.claude/)
@@ -80,10 +95,16 @@ bash/
 # Clone into ~/bash
 git clone git@github.com:vinnyp/dotfiles.git ~/bash
 
-# Symlink into home directory
-ln -sf ~/bash/.bash_profile ~/.bash_profile
-ln -sf ~/bash/.bashrc ~/.bashrc
-ln -sf ~/bash/apps/gitconfig ~/.gitconfig
+# Create the home rc SHIMS (real files that source the repo config). Keep these
+# as real files, NOT symlinks — installers append below the source line and those
+# lines stay local instead of leaking into this public repo.
+printf '%s\n' 'source ~/bash/bashrc' >> ~/.bashrc
+printf '%s\n' 'source ~/bash/bash_profile' >> ~/.bash_profile
+
+# gitconfig is also a real shim: create ~/.gitconfig that INCLUDES the repo config.
+# Keep it a real file, NOT a symlink — `gh auth login` appends a credential helper to
+# ~/.gitconfig, and that line stays local instead of leaking into this public repo.
+printf '%s\n' '[include]' '	path = ~/bash/apps/gitconfig' >> ~/.gitconfig
 
 # Agent statuslines (optional — apps/agent-statuslines.sh auto-links these on first
 # shell load, so you only need these lines if a real file already occupies the target):
