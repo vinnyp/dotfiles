@@ -68,6 +68,14 @@ if [ -d "${HOME}/bin" ] && [[ ":$PATH:" != *":${HOME}/bin:"* ]]; then
     export PATH="${HOME}/bin:${PATH}"
 fi
 
+# agent-dispatch plugin — dispatch/drive CLIs (coding-dispatch.sh, dispatch-worker, etc.)
+# callable as bare commands from any project. (bindery plugin; see foundry standards/using-coding-agents.md)
+_AGENT_DISPATCH_BIN="${HOME}/Projects/bindery/agent-dispatch/bin"
+if [ -d "${_AGENT_DISPATCH_BIN}" ] && [[ ":$PATH:" != *":${_AGENT_DISPATCH_BIN}:"* ]]; then
+    export PATH="${_AGENT_DISPATCH_BIN}:${PATH}"
+fi
+unset _AGENT_DISPATCH_BIN
+
 # ~/.local/bin — uv, uvx, and other user-installed tools.
 # Uses the env shim if present, otherwise add directly.
 if [ -f "${HOME}/.local/bin/env" ]; then
