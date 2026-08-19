@@ -15,9 +15,9 @@
 # Replace <name> with your own. Delete what you don't use.
 
 # export PROJECTS_ROOT="${HOME}/Projects"
-# export FOUNDRY_HOME="${HOME}/Documents/Obsidian/<planning-vault>"
-# export PERSONAL_VAULT="${HOME}/Documents/Obsidian/<personal-vault>"
-# export BINDERY_ROOT="${PROJECTS_ROOT}/<plugin-monorepo>"
+# export NOTES_VAULT="${HOME}/Documents/Obsidian/<vault-name>"
+# export PERSONAL_VAULT="${HOME}/Documents/Obsidian/<vault-name>"
+# export PLUGINS_ROOT="${PROJECTS_ROOT}/<repo-name>"
 
 # ── Tool config that references a private path ────────────────────────────
 # export AQL_CONFIGS_PATH="${HOME}/<private-overlay>/configs"

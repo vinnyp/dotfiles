@@ -78,7 +78,6 @@ bash/
     git_completion.bash  # Official git bash completion
   apps/
     agent-statuslines.sh # Auto-links the Claude/Gemini statusline scripts on shell load
-    conda.sh             # Conda init (Anaconda3 at /opt/anaconda3)
     git.sh               # Loads git bash completion
     gitconfig            # Git config (included by the ~/.gitconfig shim via [include])
     node.sh              # NVM init + npmls()
@@ -179,6 +178,6 @@ Both resolve through the symlink, so the configured command path never changes.
 ## Active Environment
 
 - **Shell:** Homebrew bash (`/opt/homebrew/bin/bash`)
-- **Python:** Homebrew Python + Anaconda3 (`/opt/anaconda3`)
+- **Python:** Homebrew Python (+ `uv` for tooling)
 - **Node:** NVM
 - **Package manager:** Homebrew (Apple Silicon — `/opt/homebrew`)
