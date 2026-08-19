@@ -1,0 +1,21 @@
+# Global gitignore — referenced by apps/gitconfig (core.excludesfile).
+# Tracked in this repo and pointed at directly, so a fresh clone needs no
+# copy step and updates propagate. Keep this to things that are ALWAYS
+# noise on this machine, never project-specific ignores.
+
+# Agent / editor local state
+**/.claude/settings.local.json
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor scratch
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*.local.json

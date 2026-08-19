@@ -9,9 +9,15 @@
 	whitespace = space-before-tab,fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	editor = nano
 
-	# Use custom `.gitignore` and `.gitattributes`
-	excludesfile = ~/.gitignore_global
-	attributesfile = ~/.gitattributes
+	# Global gitignore lives IN this repo (tracked, no copy step on a new
+	# machine). Was ~/.gitignore_global, which a fresh clone never got.
+	excludesfile = ~/bash/apps/gitignore_global
+
+	# NOTE: `attributesfile = ~/.gitattributes` was removed 2026-08-19 — the
+	# file never existed, so the setting was a dangling reference. Not
+	# replaced deliberately: a global `* text=auto` would renormalize line
+	# endings across every repo on the machine and cause broad diff churn.
+	# Set .gitattributes PER-REPO where it is actually needed.
 
   	# Make `git rebase` safer on OS X
   	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
