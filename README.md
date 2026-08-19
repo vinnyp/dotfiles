@@ -115,9 +115,31 @@ ln -sf ~/bash/apps/gemini/statusline-command.sh ~/.gemini/statusline-command.sh
 cp ~/bash/secrets.template.sh ~/bash/secrets.sh
 # edit ~/bash/secrets.sh
 
+# Machine-local overrides — project paths, and anything naming a PRIVATE
+# project (this repo is public). Untracked; init.sh sources it last.
+cp ~/bash/bashrc_local.template.sh ~/.bashrc_local
+# edit ~/.bashrc_local
+
+# Git identity. REQUIRED — `git commit` fails without it.
+printf '%s\n' '[user]' '\tname = Your Name' '\temail = you@example.com' >> ~/.gitconfig.local
+
 # Reload
 source ~/.bash_profile
 ```
+
+> [!warning] Never set your git identity with `git config --global`
+> That writes `[user]` to the BOTTOM of `~/.gitconfig` — *after* its
+> `[include]` of `apps/gitconfig`, which is what pulls in `~/.gitconfig.local`.
+> Git takes the last value, so the global write silently wins and your real
+> identity is ignored.
+>
+> This is not hypothetical: it mis-attributed **54 commits** as `t <t@t>`
+> across three repos between 2026-06-25 and 2026-07-30 before anyone noticed.
+> Always edit `~/.gitconfig.local` directly, and verify with:
+>
+> ```bash
+> git config --show-origin user.email   # must point at ~/.gitconfig.local
+> ```
 
 ## Agent statuslines (Claude Code + Gemini)
 
@@ -128,7 +150,7 @@ Two vendored scripts render a matching two-line status for the coding agents:
 
 ```
 ✳ Opus 4.8 | ctx: 14% | 5h: 8% | weekly: 6% | ⚡ xhigh | 🌿 main ●
-💬 sess: foundry-0631 | 📁 ~/Documents/Obsidian/foundry
+💬 sess: myproject-0631 | 📁 ~/Documents/Obsidian/myvault
 ```
 
 The payloads live in `apps/claude/statusline-command.sh` and
