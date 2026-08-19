@@ -115,7 +115,14 @@ cp ~/bash/secrets.template.sh ~/bash/secrets.sh
 # edit ~/bash/secrets.sh
 
 # Machine-local overrides — project paths, and anything naming a PRIVATE
-# project (this repo is public). Untracked; init.sh sources it last.
+# project (this repo is public). Untracked here; init.sh sources it last.
+#
+# If you keep a private companion repo (recommended), clone it and let its
+# installer symlink ~/.bashrc_local and ~/.gitconfig.local into place:
+#   git clone <your-private-dotfiles-local> ~/Projects/dotfiles-local
+#   ~/Projects/dotfiles-local/install.sh
+#
+# Otherwise create them from the template by hand:
 cp ~/bash/bashrc_local.template.sh ~/.bashrc_local
 # edit ~/.bashrc_local
 
